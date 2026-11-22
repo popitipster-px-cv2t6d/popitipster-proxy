@@ -11,6 +11,9 @@ const ROUTES = [
   { re: new RegExp("^/api/v2/events/\\?league_id=" + num + "&status=finished&limit=\\d{1,3}$"), ttl: 600 },
   { re: new RegExp("^/api/v2/teams/" + num + "/squad/$"), ttl: 1800 },
   { re: new RegExp("^/api/v2/players/" + num + "/stats/\\?league_id=\\d{0,9}(&[a-z_]+=[A-Za-z0-9_.-]{0,20})*$"), ttl: 1800 },
+  { re: new RegExp("^/basketball/api/v2/events/\\?league=2&status=(finished|scheduled)&date_from=[0-9-]{10}(&date_to=[0-9-]{10})?&limit=\\d{1,3}(&offset=\\d{1,4})?$"), ttl: 600 },
+  { re: new RegExp("^/basketball/api/v2/predictions/\\?league=2&limit=\\d{1,3}$"), ttl: 600 },
+  { re: new RegExp("^/basketball/api/v2/standings/\\?league=2$"), ttl: 1800 },
   { re: new RegExp("^/img/team/" + num + "/$"), ttl: 86400, img: true }
 ];
 const cache = new Map(); // url -> {t, code, type, body}
