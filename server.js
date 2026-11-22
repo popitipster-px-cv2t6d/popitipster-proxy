@@ -2,7 +2,7 @@
 const http = require("http"), https = require("https");
 const KEY = process.env.BSD_KEY || "", APP = process.env.APP_TOKEN || "";
 const HOST = "sports.bzzoiro.com";
-const OK_ORIGIN = /^(null|file:\/\/|https:\/\/popitipster-app\.surge\.sh)$/;
+const OK_ORIGIN = /^(null|file:\/\/|https:\/\/popitipster-app\.surge\.sh|https:\/\/popitipster-px-cv2t6d\.github\.io)$/;
 const num = "\\d{1,9}";
 const ROUTES = [
   { re: new RegExp("^/api/v2/predictions/\\?limit=(\\d{1,3})&offset=(\\d{1,5})$"), ttl: 300 },
