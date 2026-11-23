@@ -5,6 +5,9 @@ const HOST = "sports.bzzoiro.com";
 const OK_ORIGIN = /^(null|file:\/\/|https:\/\/popitipster-app\.surge\.sh|https:\/\/popitipster-px-cv2t6d\.github\.io)$/;
 const num = "\\d{1,9}";
 const ROUTES = [
+  { re: /^\/api\/v2\/events\/live\/$/, ttl: 30 },
+  { re: new RegExp("^/api/v2/events/" + num + "/$"), ttl: 30 },
+  { re: new RegExp("^/api/v2/events/" + num + "/incidents/$"), ttl: 300 },
   { re: new RegExp("^/api/v2/predictions/\\?limit=(\\d{1,3})&offset=(\\d{1,5})$"), ttl: 300 },
   { re: new RegExp("^/api/v2/events/" + num + "/(odds|stats)/$"), ttl: 300 },
   { re: new RegExp("^/api/v2/events/\\?team_id=" + num + "&status=finished&limit=\\d{1,3}$"), ttl: 600 },
@@ -58,6 +61,7 @@ http.createServer(async (req, res) => {
   if (c && now - c.t < route.ttl * 1000) return send(res, c.code, c.type, c.body, { "X-Cache": "HIT", "Cache-Control": route.img ? "public, max-age=86400" : "no-store" });
   try {
     const u = await upstream(req.url, route.img);
+    if (!route.img && u.code === 200) { try { const j = JSON.parse(u.body); j._popi = { fetched_at: new Date().toISOString(), cache_ttl_seconds: route.ttl }; u.body = Buffer.from(JSON.stringify(j)); } catch(e) {} }
     if (u.code === 200) { if (cache.size > 800) cache.clear(); cache.set(req.url, { t: now, code: 200, type: u.type, body: u.body }); }
     else if (c) return send(res, c.code, c.type, c.body, { "X-Cache": "STALE" });
     return send(res, u.code, u.type, u.body, { "X-Cache": "MISS", "Cache-Control": route.img ? "public, max-age=86400" : "no-store" });
